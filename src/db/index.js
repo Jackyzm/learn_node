@@ -5,27 +5,23 @@ const assert = require('assert');
 // Connection URL / Database Name
 const { url, dbName } = config;
 
+class Mongo {
+	initMongo() {
+		// Use connect method to connect to the server
+		MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
+			assert.equal(null, err);
+			console.log(`Connected successfully to ${url}`);
 
-let DB;
-let Client;
+			this.Client = client;
+			this.DB = client.db(dbName);
 
-// Use connect method to connect to the server
-const initMongo = async () => {
-	MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
-		assert.equal(null, err);
-		console.log(`Connected successfully to ${url}`);
+			// client.close(() => {
+			// 	console.log('-----');
+			// });
+		});
+	}
+}
 
-		Client = client;
-		DB = client.db(dbName);
+const MongoDB = new Mongo();
 
-		// client.close(() => {
-		// 	console.log('-----');
-		// });
-	});
-};
-
-module.exports = {
-	DB,
-	Client,
-	initMongo
-};
+module.exports = { MongoDB };
