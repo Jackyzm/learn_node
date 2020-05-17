@@ -1,5 +1,9 @@
 const express = require('express');
-const { login, register } = require('../db/user');
+const {
+	login,
+	register,
+	deleteUser
+} = require('../db/user');
 const { getToken } = require('../jwt/jwt');
 
 const router = express.Router();
@@ -10,7 +14,7 @@ router.post('/user/login', async (req, res) => {
 		const result = await login(req.body);
 		res.successResponse(result);
 	} catch (err) {
-		res.errorResponse(400, err.message);
+		res.errorResponse(err);
 	}
 });
 
@@ -35,7 +39,7 @@ router.post('/user/register', async (req, res) => {
 		await register(req.body);
 		res.successResponse();
 	} catch (err) {
-		res.errorResponse(400, err.message);
+		res.errorResponse(err);
 	}
 });
 
@@ -43,6 +47,15 @@ router.put('/user', async (req, res) => {
 	console.log(req.query);
 	// res.sendStatus(400);
 	res.status(400).json({ a: 11 });
+});
+
+router.delete('/user/:id', async (req, res) => {
+	try {
+		await deleteUser(req.params);
+		res.successResponse();
+	} catch (err) {
+		res.errorResponse(err);
+	}
 });
 
 module.exports = router;

@@ -51,30 +51,35 @@ const accessLogStream = fs.createWriteStream(
 );
 
 // 自定义输出日志格式
-app.use(morgan((tokens, req, res) => `${[
-	`time: ${moment().format('YYYY-MM-DD HH:mm:ss')}`,
-	`remote-addr: ${tokens['remote-addr'](req, res)}`,
-	`remote-user: ${tokens['remote-user'](req, res)}`,
-	`method: ${tokens.method(req, res)}`,
-	`url: ${tokens.url(req, res)}`,
-	`query: ${JSON.stringify(req.query)}`,
-	`body: ${JSON.stringify(req.body)}`,
-	`Authorization: ${req.headers.Authorization || req.headers.authorization} `,
-	`content-type: ${tokens.req(req, res, 'content-type')}`,
-	`origin: ${tokens.req(req, res, 'origin')}`,
-	`HTTP/${tokens['http-version'](req, res)}`,
-	`status: ${tokens.status(req, res)}`,
-	`referrer: ${tokens.referrer(req, res)}`,
-	`user-agent: ${tokens['user-agent'](req, res)}`,
-	`useTime: ${tokens['response-time'](req, res)} ms`
-].join('\r\n')} \r\n`, { stream: accessLogStream }));
+app.use(morgan((tokens, req, res) => {
+	console.log(tokens.response);
+	return `${[
+		`time: ${moment().format('YYYY-MM-DD HH:mm:ss')}`,
+		`remote-addr: ${tokens['remote-addr'](req, res)}`,
+		`remote-user: ${tokens['remote-user'](req, res)}`,
+		`method: ${tokens.method(req, res)}`,
+		`url: ${tokens.url(req, res)}`,
+		`query: ${JSON.stringify(req.query)}`,
+		`body: ${JSON.stringify(req.body)}`,
+		`Authorization: ${req.headers.Authorization || req.headers.authorization} `,
+		`content-type: ${tokens.req(req, res, 'content-type')}`,
+		`origin: ${tokens.req(req, res, 'origin')}`,
+		`HTTP/${tokens['http-version'](req, res)}`,
+		`status: ${tokens.status(req, res)}`,
+		`referrer: ${tokens.referrer(req, res)}`,
+		`user-agent: ${tokens['user-agent'](req, res)}`,
+		`useTime: ${tokens['response-time'](req, res)} ms`
+	].join('\r\n')} \r\n`;
+}, { stream: accessLogStream }));
 
-// 开发环境下 在控制台打印错误信息
-app.use(morgan('dev', {
-	skip(_, res) {
-		return res.statusCode < 400;
-	}
-}));
+//  log only 4xx and 5xx responses to console
+if (env === 'development') {
+	app.use(morgan('dev', {
+		skip(_, res) {
+			return res.statusCode < 400;
+		}
+	}));
+}
 
 
 // 中间件解析body
@@ -99,24 +104,21 @@ app.use((_, res, next) => {
 	};
 
 	res.errorResponse = (...args) => {
-		if (!args.length || args.length < 2 || args.length > 3) throw new Error('errorResponse 只接受两个或三个参数');
-
 		let code = 500;
-		let msg = '未知错误';
-		let err;
-		if (args.length === 2) {
-			[code, msg] = args;
-		} else {
-			[code, msg, err] = args;
-		}
+
+		const [errObj, status, message] = args;
+		let msg = (errObj && errObj.message) || '未知错误';
+
+		// 通过new Error 自己创建的 可预知的错误
+		if (errObj.name === 'Error') code = 400;
+		if (status) code = status;
+		if (message) msg = message;
 
 		const obj = {
 			code,
 			msg,
 			success: false
 		};
-
-		if (err) obj.err = err;
 		return res.status(code).json(obj);
 	};
 	next();
@@ -124,7 +126,14 @@ app.use((_, res, next) => {
 
 // 验证jwt
 app.use(jwtAuth, (err, _, res, next) => {
-	if (err) return res.errorResponse(401, '登陆信息异常，请重新登陆', err.code);
+	if (err) {
+		return res.status(401).json({
+			code: 401,
+			msg: '登陆信息异常，请重新登陆',
+			err: err.code,
+			success: false
+		});
+	}
 	next();
 });
 
@@ -135,7 +144,7 @@ app.use('/', user);
 
 // 自定义404返回
 app.use((_, res) => {
-	res.errorResponse(404, '404 Not Found');
+	res.errorResponse(new Error('404 Not Found'), 404);
 });
 
 // 启动服务

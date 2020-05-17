@@ -31,12 +31,23 @@ const register = async ({ mobile = '', password = '' }) => {
 	await collection.insertOne({
 		mobile,
 		password,
-		id: uuid()
+		id: uuid().split('-').join('')
 	});
+	return null;
+};
+
+// 删除用户
+const deleteUser = async ({ id = '' }) => {
+	const collection = await MongoDB.DB.collection('user');
+	const result = await collection.findOne({ id });
+
+	if (!result) throw new Error('用户不存在');
+	await collection.deleteOne({ id });
 	return null;
 };
 
 module.exports = {
 	login,
-	register
+	register,
+	deleteUser
 };
