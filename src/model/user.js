@@ -1,6 +1,6 @@
 const uuid = require('uuid').v4;
-const { getToken } = require('../jwt/jwt');
-const { MongoDB } = require('./index');
+const { getToken } = require('../jwt');
+const MongoDB = require('../db/index');
 
 // 登陆
 const login = async ({ mobile = '', password = '' }) => {
