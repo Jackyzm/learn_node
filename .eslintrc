@@ -4,6 +4,10 @@
         "no-console": "off",
         "no-tabs": "off",
         "array-callback-return": "off",
+        "max-len": [
+            "error",
+            200
+        ],
         "indent": [
             "error",
             "tab"

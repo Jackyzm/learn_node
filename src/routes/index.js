@@ -4,14 +4,17 @@ const express = require('express');
 const router = express.Router();
 
 /**
- * @api {get} /aaa abc
- * @apiName aaa
- * @apiGroup api
- *
- * @apiParam {Number} id User's unique ID.
- *
- * @apiSuccess {String} firstname Firstname of the User.
- * @apiSuccess {String} lastname  Lastname of the User.
+ * @route POST /users
+ * @summary d达萨达萨达萨达萨
+ * @param {Point.model} point.body.required - the new point
+ * @group foo - Operations about user
+ * @param {string} email.query.required - username or email
+ * @param {string} password.query.required - user's password.
+ * @param {enum} status.query.required - Status values that need to be considered for filter - eg: available,pending
+ * @operationId retrieveFooInfo
+ * @returns {Response.model} 200 - An array of user info
+ * @returns {Product.model}  default - Unexpected error
+ * @returns {Array.<Point>} Point - Some description for point
  */
 router.get('/aaa', async (req, res) => {
 	// console.log(req.body, req.user);

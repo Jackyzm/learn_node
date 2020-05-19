@@ -5,6 +5,7 @@ const Logger = require('./logger');
 const MongoDB = require('./db');
 const { jwtAuth } = require('./jwt');
 const { useResponse } = require('./middleware');
+const initSwagger = require('./swagger');
 const router = require('./routes/index');
 const user = require('./routes/user');
 
@@ -15,6 +16,9 @@ MongoDB.initMongo();
 
 // 初始化logger
 Logger.initLogger();
+
+// 初始化swagger
+initSwagger(app);
 
 // allow custom header and CORS 跨域解决
 // app.all('*', (req, res, next) => {
@@ -66,7 +70,7 @@ app.use(jwtAuth, (err, _, res, next) => {
 
 // 挂载路由
 app.use('/api', router);
-// user 单独挂载 不验证权限
+// user 单独挂载
 app.use('/', user);
 
 // 自定义404返回
@@ -78,4 +82,5 @@ app.use((_, res) => {
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
 	console.log('running at: http://localhost:8000');
+	console.log('swagger at: http://localhost:8000/api-docs');
 });
