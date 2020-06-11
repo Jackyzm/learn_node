@@ -2,7 +2,7 @@
  * @typedef Product
  * @property {integer} id
  * @property {string} name.required - Some description for product
- * @property {Array.<Point>} Point
+ * @property {Array.<Point>} point
  */
 
 /**

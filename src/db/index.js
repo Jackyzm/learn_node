@@ -5,6 +5,10 @@ const assert = require('assert');
 // Connection URL / Database Name
 const { url, dbName } = config;
 
+/**
+ * @description
+ * @class Mongo
+ */
 class Mongo {
 	initMongo() {
 		// Use connect method to connect to the server

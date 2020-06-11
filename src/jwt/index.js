@@ -2,13 +2,13 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const authJwt = require('express-jwt');
 
-const getToken = async (obj, expiresIn) => {
+const getToken = async (userInfo, expiresIn) => {
 // 获取签发 JWT 时需要用的密钥
 	const privateKey = fs.readFileSync(`${__dirname}/key/private.key`);
 
 	// 签发 Token
 	const token = await jwt.sign(
-		obj,
+		userInfo,
 		privateKey,
 		{ algorithm: 'RS256', expiresIn }
 	);
