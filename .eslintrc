@@ -1,22 +1,64 @@
 {
-    "extends": "airbnb-base",
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends": [
+        "airbnb-base",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
     "rules": {
-        "no-console": "off",
-        "no-tabs": "off",
-        "array-callback-return": "off",
-        "max-len": [
+        "linebreak-style": [
             "error",
-            200
+            "unix"
         ],
-        "indent": [
-            "error",
-            "tab"
-        ],
+        "import/no-extraneous-dependencies": "off",
+        "consistent-return": "off",
         "comma-dangle": [
             "error",
             "never"
         ],
-        "consistent-return": "off",
+        "no-console": "off",
+        "no-extra-semi": "off",
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "import/prefer-default-export": "off",
+        "import/no-unresolved": [
+            "error",
+            {
+                "ignore": [
+                    "@"
+                ]
+            }
+        ],
+        "import/extensions": "off",
+        "max-len": [
+            "error",
+            {
+                "code": 150,
+                "tabWidth": 4
+            }
+        ],
+        "object-curly-spacing": [
+            "error",
+            "always",
+            {
+                "objectsInObjects": false,
+                "arraysInObjects": false
+            }
+        ],
+        "no-return-assign": "off",
         "object-curly-newline": [
             "error",
             {
@@ -37,6 +79,13 @@
                     "minProperties": 3
                 }
             }
-        ]
+        ],
+        "object-property-newline": "error",
+        "no-underscore-dangle": "off",
+        "implicit-arrow-linebreak": "off",
+        "no-bitwise": "off",
+        "no-plusplus": "off",
+        "no-unused-expressions": "off",
+        "array-callback-return": "off"
     }
 }

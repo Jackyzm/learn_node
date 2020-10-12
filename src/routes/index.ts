@@ -1,7 +1,8 @@
-const express = require('express');
+import { Router } from '@types/express';
+import express from 'express';
 // const user = require('./user');
 
-const router = express.Router();
+const router: Router = express.Router();
 
 /**
  * @route POST /users
@@ -17,13 +18,13 @@ const router = express.Router();
  * @returns {Array.<Point>} Point - Some description for point
  */
 router.get('/aaa', async (req, res) => {
-	// console.log(req.body, req.user);
-	res.send('------');
+    // console.log(req.body, req.user);
+    res.send('------');
 });
 
 router.get('/api', async (req, res) => {
-	console.log(req.query);
-	res.status(400).json({ a: 11 });
+    console.log(req.query);
+    res.status(400).json({ a: 11 });
 });
 
 module.exports = router;
